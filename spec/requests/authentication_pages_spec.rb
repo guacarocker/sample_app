@@ -43,6 +43,15 @@ describe "Authentication Pages" do
 		end 
 	end
 
+	describe "Profile and Settings links" do
+		before { visit root_url }
+
+		describe "when there is not a signed in user" do
+			it { should_not have_link 'Profile' }
+			it { should_not have_link 'Settings' }
+		end
+	end
+
 	describe "authorization" do
 		describe "for no signed-in users" do
 			let(:user) { FactoryGirl.create(:user) }
@@ -98,6 +107,18 @@ describe "Authentication Pages" do
 			describe "should not been able to delete another user" do
 				before { delete user_path(user) }
 				specify { expect(response).to redirect_to(root_url) }
+			end
+		end
+
+		describe "in the microposts controller" do
+			describe "submitting to the create action" do
+				before { post microposts_path }
+				specify { expect(response).to redirect_to(signin_path) }
+			end
+
+			describe "submitting to the destroy action" do
+				before { delete micropost_path(FactoryGirl.create(:micropost)) }
+				specify { expect(response).to redirect_to(signin_path) }
 			end
 		end
 	end
