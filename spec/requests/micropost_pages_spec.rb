@@ -5,6 +5,17 @@ describe "Micropost Pages" do
 	let(:user) { FactoryGirl.create(:user) }
 	before { sign_in user }
 
+
+	describe "microposts of another user" do
+		let(:another_user) { FactoryGirl.create(:user) }
+		before do
+			FactoryGirl.create(:micropost, user: another_user)
+			visit user_path(another_user)
+		end
+		it { should_not have_link 'delete' }
+	end
+
+
 	describe "micropost creation" do
 		before { visit root_url }
 
@@ -37,5 +48,7 @@ describe "Micropost Pages" do
 				expect { click_link "delete" }.to change(Micropost, :count).by(-1)
 			end
 		end
+
 	end
+
 end

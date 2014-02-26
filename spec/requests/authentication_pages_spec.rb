@@ -53,7 +53,7 @@ describe "Authentication Pages" do
 	end
 
 	describe "authorization" do
-		describe "for no signed-in users" do
+		describe "for non-signed-in users" do
 			let(:user) { FactoryGirl.create(:user) }
 
 			describe "visiting the edit page" do
@@ -64,6 +64,16 @@ describe "Authentication Pages" do
 			describe "submitting to the update page" do
 				before { patch user_path(user) }
 				specify { expect(response).to redirect_to(signin_path) }
+			end
+
+			describe "visiting the following page" do
+				before { visit following_user_path(user) }
+				it { should have_title "Sign in" }
+			end
+
+			describe "visiting the followers page" do
+				before { visit followers_user_path(user) }
+				it { should have_title "Sign in" }
 			end
 
 			describe "when attempting to visit a protected page" do
@@ -118,6 +128,18 @@ describe "Authentication Pages" do
 
 			describe "submitting to the destroy action" do
 				before { delete micropost_path(FactoryGirl.create(:micropost)) }
+				specify { expect(response).to redirect_to(signin_path) }
+			end
+		end
+
+		describe "in the Relationships controller" do
+			describe "submitting to the create action" do
+				before { post relationships_path }
+				specify { expect(response).to redirect_to(signin_path) }
+			end
+
+			describe "submitting to the destroy action" do
+				before { delete relationship_path(1) }
 				specify { expect(response).to redirect_to(signin_path) }
 			end
 		end
