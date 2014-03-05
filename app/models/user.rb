@@ -6,6 +6,8 @@ class User < ActiveRecord::Base
 	has_many :reverse_relationships, foreign_key: "followed_id", class_name: "Relationship",
 						dependent: :destroy
 	has_many :followers, through: :reverse_relationships
+	has_many :received_messages, class_name: "Message", foreign_key: "receiver_id" ,dependent: :destroy
+	has_many :sent_messages, class_name: "Message", foreign_key: "sender_id", dependent: :destroy
 
 	has_secure_password
 
@@ -47,6 +49,13 @@ class User < ActiveRecord::Base
 	def admin?
 		self.admin
 	end
+
+	def send_password_reset
+    self.password_reset_token = User.encrypt(User.new_remember_token)
+    self.password_reset_sent_at = Time.zone.now
+    save!(validate: false)
+    UserMailer.password_reset(self).deliver
+  end
 
 	private
 		def create_remember_token

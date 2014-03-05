@@ -61,6 +61,7 @@ class UsersController < ApplicationController
    render "show_follow"
   end
 
+
   private
 
   def user_params

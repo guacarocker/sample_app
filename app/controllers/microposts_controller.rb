@@ -3,6 +3,20 @@ class MicropostsController < ApplicationController
 	before_action :correct_user, only: [:destroy]
 	
 	def create
+		if @micropost.content.index(/(d\s[A-Za-z0-9_]{1,15})/) == 0
+			user_string = @micropost.content.match(/d\s([A-Za-z0-9_]{1,15})/)[1]
+			user = User.find_by(username: user_string)
+			direct_message = current_user.sent_messages.build(user, @content)
+			if direct_message.save
+				flash[:success] = "The message has been sent."
+				redirect_to root_url
+			else
+				flash[:error] = "The message couldn't be sent."
+				redirect_to root_url
+		else
+			codigo de abajo
+		end
+		
 		@micropost = current_user.microposts.build(micropost_params)
 		if @micropost.save
 			flash[:success] = "Micropost created!"

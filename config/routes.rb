@@ -1,5 +1,8 @@
 SampleApp::Application.routes.draw do
-  
+ 
+  get "messages/index"
+  get "messages/show"
+  get "messages/destroy"
   resources :users do
     member do
       get :following, :followers
@@ -8,6 +11,8 @@ SampleApp::Application.routes.draw do
   resources :sessions,      only: [:new, :create, :destroy]
   resources :microposts,    only: [:create, :destroy]
   resources :relationships, only: [:create, :destroy]
+  resources :password_resets
+  resources :messages, only: [:create, :destroy, :index, :show]
 
   match '/signup', to: 'users#new', via: 'get'
   match '/signin', to: 'sessions#new', via: 'get'
